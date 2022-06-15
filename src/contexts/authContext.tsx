@@ -1,10 +1,30 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/axios";
 import { createStandaloneToast } from "@chakra-ui/react";
 import theme from "../theme/theme";
 import { AxiosError, AxiosResponse } from "axios";
 import { IUser } from "../types";
+import { Loading } from "../pages/Loading/Loading";
+
+export interface DataResponse<T> {
+  data: T;
+}
+
+export interface LoginResponse {
+  user: IUser;
+  token: {
+    expires_at: string;
+    token: string;
+    type: string;
+  };
+}
 
 type SignInCredentials = {
   email: string;
@@ -46,10 +66,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (storageToken && storageUser) {
         api.defaults.headers.common.Authorization = `Bearer ${storageToken}`;
         await api
-          .get("/me")
-          .then((response) => {
-            setUser(response.data);
-            localStorage.setItem(STORAGE_USER, JSON.stringify(response.data));
+          .get("users/me")
+          .then(({ data }: AxiosResponse<IUser>) => {
+            console.log(data);
+            setUser(data);
+            localStorage.setItem(STORAGE_USER, JSON.stringify(data));
+          })
+          .catch((error) => {
+            console.log(error.message);
           })
           .finally(() => {
             setLoading(false);
@@ -62,7 +86,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   useEffect(() => {
-    api.interceptors.response.use(undefined, (error) => {
+    api.interceptors.response.use(undefined, (error: AxiosError) => {
       if (error.response) {
         if (error.response.status === 401) {
           localStorage.clear();
@@ -89,17 +113,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
           email,
           password,
         })
-        .then((response) => {
-          const { token, user } = response.data;
+        .then(({ data }: AxiosResponse<LoginResponse>) => {
+          const { token, user } = data;
           setUser(user);
           api.defaults.headers.common.Authorization = `Bearer ${token}`;
-          localStorage.setItem(STORAGE_USER, JSON.stringify(user));
-          localStorage.setItem(TOKEN_API, token);
-
-          resolve(response);
+          localStorage.setItem(STORAGE_USER, JSON.stringify({ user }));
+          localStorage.setItem(TOKEN_API, token.token);
+          resolve(data);
           setLoading(false);
         })
-        .catch((erro) => {
+        .catch((erro: AxiosError) => {
           setLoading(false);
           reject(erro);
         });
@@ -124,7 +147,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
   return (
     <AuthContext.Provider value={{ logout, user, signIn, isAuthenticated }}>
-      {!loading ? children : null}
+      {!loading ? children : <Loading />}
     </AuthContext.Provider>
   );
 }
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
