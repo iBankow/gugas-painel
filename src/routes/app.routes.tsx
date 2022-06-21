@@ -1,11 +1,13 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Header } from "../components/Header";
 import { useAuth } from "../contexts/authContext";
+import { Layout } from "./layout.routes";
 
 export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Home/>} />
+        <Route index element={<Home />} />
       </Route>
     </Routes>
   );
@@ -16,14 +18,6 @@ const Home = () => {
     <div>
       <h1>Home</h1>
     </div>
-  );
-};
-
-const Layout = () => {
-  return (
-    <RequireAuth>
-      <Outlet />
-    </RequireAuth>
   );
 };
 

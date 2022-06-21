@@ -2,7 +2,7 @@ export interface IUser {
   id: string;
   email: string;
   name: string;
-  image: string | null;
+  image?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -10,7 +10,7 @@ export interface IUser {
 export interface ICategory {
   id: string;
   category: string;
-  image: string | null;
+  image?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -22,7 +22,7 @@ export interface IProduct {
   createdById: string;
   name: string;
   description: string;
-  image: string;
+  image?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

@@ -79,6 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setLoading(false);
           });
       } else if (!storageUser && !storageToken) {
+        setLoading(false);
         setUser(null);
       }
     }
@@ -116,7 +117,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .then(({ data }: AxiosResponse<LoginResponse>) => {
           const { token, user } = data;
           setUser(user);
-          api.defaults.headers.common.Authorization = `Bearer ${token}`;
+          api.defaults.headers.common.Authorization = `Bearer ${token.token}`;
           localStorage.setItem(STORAGE_USER, JSON.stringify({ user }));
           localStorage.setItem(TOKEN_API, token.token);
           resolve(data);
@@ -133,13 +134,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function logout() {
     setLoading(true);
-    api
+    await api
       .post("/logout")
       .then(() => {
         localStorage.removeItem(STORAGE_USER);
         localStorage.removeItem(TOKEN_API);
         setUser(null);
-        navigate("/login");
+        navigate("/");
       })
       .finally(() => {
         setLoading(false);

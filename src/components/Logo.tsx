@@ -1,15 +1,17 @@
-import { Text } from "@chakra-ui/react";
+import { Text, TextProps } from "@chakra-ui/react";
 
-interface LogoProps {
+interface LogoProps extends TextProps {
   name: string;
 }
 
-export const Logo = ({ name }: LogoProps) => {
+export const Logo = ({ name, ...rest }: LogoProps) => {
   return (
     <Text
-      fontSize={"xxx-large"}
       fontWeight={"bold"}
+      fontSize={["2xl", "3xl"]}
       textTransform={"uppercase"}
+      letterSpacing="tight"
+      {...rest}
     >
       {name}
     </Text>
