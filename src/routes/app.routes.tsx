@@ -1,6 +1,7 @@
 import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { Header } from "../components/Header";
 import { useAuth } from "../contexts/authContext";
+import { Products } from "../pages/Products/Products";
 import { Layout } from "./layout.routes";
 
 export default function App() {
@@ -8,6 +9,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="/products" element={<Products />} />
       </Route>
     </Routes>
   );

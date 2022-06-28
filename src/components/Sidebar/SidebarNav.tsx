@@ -9,7 +9,12 @@ const SidebarNav = () => {
           GERAL
         </Text>
         <Stack spacing={"4"} mt={"8"} align={"stretch"}>
-          <Link display={"flex"} alignItems={"cente"} color={"yellow.300"}>
+          <Link
+            display={"flex"}
+            alignItems={"cente"}
+            color={"yellow.300"}
+            href="/products"
+          >
             <Icon as={RiDashboardLine} fontSize={"20"} />
             <Text ml={"4"} fontWeight="medium">
               Produtos
