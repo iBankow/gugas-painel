@@ -51,7 +51,7 @@ const Header = () => {
         />
       )}
 
-      <Logo name="gugas" fontSize={"3xl"} w="64" align={"center"} />
+      <Logo name="gugas" fontSize={"3xl"} align={"center"} />
 
       <Flex align={"center"} ml={"auto"}>
         <Stack

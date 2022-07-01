@@ -68,7 +68,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         await api
           .get("users/me")
           .then(({ data }: AxiosResponse<IUser>) => {
-            console.log(data);
             setUser(data);
             localStorage.setItem(STORAGE_USER, JSON.stringify(data));
           })

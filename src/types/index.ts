@@ -19,7 +19,7 @@ export interface ICategory {
 export interface IProduct {
   id: string;
   categoryId: string;
-  createdById: string;
+  createdBy: string;
   name: string;
   description: string;
   image?: string;
@@ -27,8 +27,8 @@ export interface IProduct {
   createdAt: string;
   updatedAt: string;
   category: ICategory;
-  prices: IProductPrice;
-  stocks: IProductStock;
+  price: IProductPrice;
+  stock: IProductStock;
 }
 
 export interface IProductPrice {
@@ -65,7 +65,7 @@ export interface IOrder {
   products: IProduct[];
 }
 
-export interface IPaginate<Model = any> {
+export interface IPaginate<Model> {
   data: Model[];
   meta: IMeta;
 }

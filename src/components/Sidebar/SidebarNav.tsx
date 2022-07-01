@@ -1,5 +1,6 @@
 import { Box, Icon, Link, Stack, Text } from "@chakra-ui/react";
 import { RiDashboardLine } from "react-icons/ri";
+import { Link as RouterLink } from "react-router-dom";
 
 const SidebarNav = () => {
   return (
@@ -13,14 +14,20 @@ const SidebarNav = () => {
             display={"flex"}
             alignItems={"cente"}
             color={"yellow.300"}
-            href="/products"
+            as={RouterLink}
+            to="/products"
           >
             <Icon as={RiDashboardLine} fontSize={"20"} />
             <Text ml={"4"} fontWeight="medium">
               Produtos
             </Text>
           </Link>
-          <Link display={"flex"} alignItems={"cente"}>
+          <Link
+            display={"flex"}
+            alignItems={"cente"}
+            as={RouterLink}
+            to="/categories"
+          >
             <Icon as={RiDashboardLine} fontSize={"20"} />
             <Text ml={"4"} fontWeight="medium">
               Categorias

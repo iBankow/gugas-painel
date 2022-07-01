@@ -5,8 +5,6 @@ import { Auth } from "./auth.routes";
 const Index = () => {
   const { user } = useAuth();
 
-  console.log(user?.name)
-
   return user ? <App /> : <Auth />;
 };
 

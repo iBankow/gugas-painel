@@ -1,4 +1,4 @@
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Table,
   Thead,
@@ -7,26 +7,32 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Button,
   Tag,
-  useBreakpointValue,
   Box,
   Flex,
   Input,
   Stack,
   Divider,
+  IconButton,
+  Tooltip,
+  useDisclosure,
+  Text,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../../services/axios";
 import { IMeta, IPaginate, IProduct } from "../../types";
+import { IoMdCreate, IoMdEye } from "react-icons/io";
+import { ProductModal } from "./components/ProductModal";
 
 const Products = () => {
-  const variant = useBreakpointValue({ base: false, md: true });
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [product, setProduct] = useState<IProduct | null>(null);
   const [meta, setMeta] = useState<IMeta>({
     current_page: 1,
     per_page: 10,
@@ -58,7 +64,13 @@ const Products = () => {
           justifyContent={"space-between"}
         >
           <Input placeholder="Pesquisar Produto" w={["100%", "300px"]} />
-          <Button leftIcon={<AddIcon />} px="8" colorScheme={"yellow"}>
+          <Button
+            leftIcon={<AddIcon />}
+            px="8"
+            colorScheme={"yellow"}
+            as={Link}
+            to="product"
+          >
             Adicionar Produto
           </Button>
         </Stack>
@@ -68,9 +80,10 @@ const Products = () => {
         <Table variant="striped" size={"lg"}>
           <Thead>
             <Tr>
-              {variant && <Th>ID</Th>}
               <Th>Nome</Th>
               <Th>Categoria</Th>
+              <Th>Estoque</Th>
+              <Th>Preco</Th>
               <Th>Ativo</Th>
               <Th>Acoes</Th>
             </Tr>
@@ -79,9 +92,25 @@ const Products = () => {
             {products.map((product) => {
               return (
                 <Tr key={product.id}>
-                  {variant && <Td>{product.id}</Td>}
                   <Td>{product.name}</Td>
-                  <Td>{product.category?.category || "--"}</Td>
+                  <Td>
+                    {(
+                      <Tag colorScheme={"yellow"}>
+                        {product.category?.category.toUpperCase()}
+                      </Tag>
+                    ) || "--"}
+                  </Td>
+                  <Td>
+                    <Text color={product.stock.quantity < 10 ? "red.500" : ""}>
+                      {product.stock.quantity || "--"}
+                    </Text>
+                  </Td>
+                  <Td>
+                    {Intl.NumberFormat("pt-br", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(product.price.price) || "--"}
+                  </Td>
                   <Td>
                     {product.isActive ? (
                       <Tag colorScheme={"green"}>SIM</Tag>
@@ -90,9 +119,30 @@ const Products = () => {
                     )}
                   </Td>
                   <Td>
-                    <Button colorScheme={"yellow"} size="sm">
-                      Editar
-                    </Button>
+                    <Stack spacing={"2"} direction={"row"} align={"center"}>
+                      <Tooltip label="Editar Produto">
+                        <IconButton
+                          as={Link}
+                          to={`product/${product.id}`}
+                          colorScheme="blue"
+                          aria-label="Edit product"
+                          size={"sm"}
+                          icon={<IoMdCreate fontSize={16} />}
+                        />
+                      </Tooltip>
+                      <Tooltip label="Visualizar Produto">
+                        <IconButton
+                          colorScheme="orange"
+                          aria-label="View product"
+                          size={"sm"}
+                          onClick={() => {
+                            setProduct(product);
+                            onOpen();
+                          }}
+                          icon={<IoMdEye fontSize={16} />}
+                        />
+                      </Tooltip>
+                    </Stack>
                   </Td>
                 </Tr>
               );
@@ -100,15 +150,19 @@ const Products = () => {
           </Tbody>
           <Tfoot>
             <Tr>
-              {variant && <Th>ID</Th>}
               <Th>Nome</Th>
               <Th>Categoria</Th>
+              <Th>Estoque</Th>
+              <Th>Preco</Th>
               <Th>Ativo</Th>
               <Th>Acoes</Th>
             </Tr>
           </Tfoot>
         </Table>
       </TableContainer>
+      {product && (
+        <ProductModal isOpen={isOpen} onClose={onClose} product={product} />
+      )}
     </Box>
   );
 };
