@@ -33,6 +33,17 @@ const SidebarNav = () => {
               Categorias
             </Text>
           </Link>
+          <Link
+            display={"flex"}
+            alignItems={"cente"}
+            as={RouterLink}
+            to="/orders"
+          >
+            <Icon as={RiDashboardLine} fontSize={"20"} />
+            <Text ml={"4"} fontWeight="medium">
+              Vendas
+            </Text>
+          </Link>
         </Stack>
       </Box>
       <Box>

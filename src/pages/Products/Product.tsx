@@ -211,7 +211,7 @@ const Product = () => {
                   </option>
                 );
               })}
-            </Input>
+            </Input> 
             {productId && (
               <Switch
                 id="isActive"

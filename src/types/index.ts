@@ -62,6 +62,7 @@ export interface IOrder {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  method: IPaymentMethod;
   products: IProduct[];
 }
 

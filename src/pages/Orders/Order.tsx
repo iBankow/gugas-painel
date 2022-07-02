@@ -8,7 +8,7 @@ import {
   Select,
   Stack,
   Text,
-  // useToast,
+  useToast,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -24,18 +24,25 @@ import { Input } from "../../components/Form/Input";
 import { api } from "../../services/axios";
 import { IProduct } from "../../types";
 
+interface IError {
+  message: string;
+}
+interface IResponseError {
+  errors: IError[];
+}
 type ItemsFormProps = {
   items: {
     quantity: number;
     productId: string;
-    price?: string;
+    price?: number;
   }[];
   subTotal: number;
-  paymentMethod: string;
+  methodId: string;
+  status: string;
 };
 
 const Order = () => {
-  // const toast = useToast();
+  const toast = useToast();
   // const navigate = useNavigate();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -55,7 +62,38 @@ const Order = () => {
   });
 
   const onSubmit = async (value: any) => {
-    console.log(value);
+    await api
+      .post("/sales", value)
+      .then(() => {
+        toast({
+          title: "Venda cadastrada com sucesso.",
+          status: "success",
+          duration: 9000,
+          isClosable: true,
+        });
+        // navigate("/orders");
+      })
+      .catch(({ response }: AxiosError<IResponseError>) => {
+        if (response?.data.errors) {
+          response?.data.errors.map((error) => {
+            toast({
+              title: "Erro de Estoque",
+              description: error.message,
+              status: "error",
+              duration: 9000,
+              isClosable: true,
+            });
+          });
+        } else {
+          toast({
+            title: "Algo de errado ocorreu.",
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+          });
+        }
+        console.log(response?.data.errors);
+      });
   };
 
   useEffect(() => {
@@ -65,9 +103,12 @@ const Order = () => {
   const calculateSubtotal = () => {
     const values = getValues();
     var prevSubTotal: number = 0;
-    values.items.forEach((field: any) => {
+    values.items.forEach((field, index) => {
       if (field.productId) {
         const product = products.find((item) => {
+          if (item.id === field.productId) {
+            setValue(`items.${index}.price`, item?.price?.price || 0);
+          }
           return item.id === field.productId;
         });
         prevSubTotal +=
@@ -103,9 +144,17 @@ const Order = () => {
       <Box as={"form"} onSubmit={handleSubmit(onSubmit)} marginTop={"8"}>
         <Stack spacing={"4"}>
           <Input
-            name="paymentMethod"
+            name="methodId"
             label="Nome"
             placeholder="Nome da Categoria"
+            register={register}
+            errors={errors}
+            required
+          />
+          <Input
+            name="status"
+            label="Status"
+            placeholder="Pago | Nao Pago"
             register={register}
             errors={errors}
             required
@@ -137,14 +186,17 @@ const Order = () => {
                     );
                   })}
                 </Select>
-                <NumberInput min={1} defaultValue={1}>
+                <NumberInput
+                  min={1}
+                  defaultValue={1}
+                  onChange={(e) => {
+                    setValue(`items.${index}.quantity`, +e);
+                    setLoad(!load);
+                  }}
+                >
                   <NumberInputField
                     {...register(`items.${index}.quantity`)}
                     placeholder="Quantidade"
-                    onChange={(e) => {
-                      setValue(`items.${index}.quantity`, +e.target.value);
-                      setLoad(!load);
-                    }}
                   />
                   <NumberInputStepper>
                     <NumberIncrementStepper />
