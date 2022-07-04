@@ -76,7 +76,7 @@ const Order = () => {
       })
       .catch(({ response }: AxiosError<IResponseError>) => {
         if (response?.data.errors) {
-          response?.data.errors.map((error) => {
+          response?.data.errors.forEach((error) => {
             toast({
               title: "Erro de Estoque",
               description: error.message,
