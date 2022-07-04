@@ -3,6 +3,8 @@ import { Categories } from "../pages/Categories/Categories";
 import { Category } from "../pages/Categories/Category";
 import { Order } from "../pages/Orders/Order";
 import { Orders } from "../pages/Orders/Orders";
+import { Method } from "../pages/PaymentMethods/Method";
+import { Methods } from "../pages/PaymentMethods/Methods";
 import { Product } from "../pages/Products/Product";
 import { Products } from "../pages/Products/Products";
 import { Layout } from "./layout.routes";
@@ -19,6 +21,8 @@ export default function App() {
         <Route path="/categories/category" element={<Category />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/orders/order" element={<Order />} />
+        <Route path="/methods" element={<Methods />} />
+        <Route path="/methods/method" element={<Method />} />
       </Route>
     </Routes>
   );

@@ -50,6 +50,7 @@ export interface IProductStock {
 export interface IPaymentMethod {
   id: string;
   method: string;
+  isActive: boolean;
   createdAt: Date;
 }
 

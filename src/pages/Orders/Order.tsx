@@ -20,9 +20,9 @@ import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "../../components/Form/Input";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../services/axios";
-import { IProduct } from "../../types";
+import { IPaymentMethod, IProduct } from "../../types";
 
 interface IError {
   message: string;
@@ -43,8 +43,9 @@ type ItemsFormProps = {
 
 const Order = () => {
   const toast = useToast();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [methods, setMethods] = useState<IPaymentMethod[]>([]);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [load, setLoad] = useState(false);
   const {
@@ -71,7 +72,7 @@ const Order = () => {
           duration: 9000,
           isClosable: true,
         });
-        // navigate("/orders");
+        navigate("/orders");
       })
       .catch(({ response }: AxiosError<IResponseError>) => {
         if (response?.data.errors) {
@@ -98,6 +99,7 @@ const Order = () => {
 
   useEffect(() => {
     getProducts();
+    getMethods();
   }, []);
 
   const calculateSubtotal = () => {
@@ -135,6 +137,17 @@ const Order = () => {
       });
   };
 
+  const getMethods = async () => {
+    await api
+      .get(`/methods`)
+      .then(({ data }: AxiosResponse<IPaymentMethod[]>) => {
+        setMethods(data);
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
+  };
+
   return (
     <Box w={"100%"}>
       <Stack marginBottom={"8"}>
@@ -145,20 +158,33 @@ const Order = () => {
         <Stack spacing={"4"}>
           <Input
             name="methodId"
-            label="Nome"
-            placeholder="Nome da Categoria"
+            as={Select}
+            label="Método"
+            placeholder="Método de Pagamento"
             register={register}
             errors={errors}
             required
-          />
+          >
+            {methods.map((method) => {
+              return (
+                <option key={method.id} value={method.id}>
+                  {method.method}
+                </option>
+              );
+            })}
+          </Input>
           <Input
+            as={Select}
             name="status"
             label="Status"
-            placeholder="Pago | Nao Pago"
+            placeholder="Status de Pagamento"
             register={register}
             errors={errors}
             required
-          />
+          >
+            <option value={"paid"}>Pago</option>
+            <option value={"not_paid"}>Nao Pago</option>
+          </Input>
           {fields.map(({ id }, index) => {
             return (
               <Stack key={id} direction={"row"} spacing={"4"} w="100%">

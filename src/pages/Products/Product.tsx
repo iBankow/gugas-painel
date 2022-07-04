@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Input } from "../../components/Form/Input";
+import { NumberInput } from "../../components/Form/NumberField";
 import { Switch } from "../../components/Form/Switch";
 import { api } from "../../services/axios";
 import { ICategory, IProduct } from "../../types";
@@ -167,7 +168,7 @@ const Product = () => {
             required
           />
           <Stack direction={"row"} spacing={"4"}>
-            <Input
+            <NumberInput
               name="quantity"
               type={"number"}
               label="Estoque"
@@ -211,13 +212,14 @@ const Product = () => {
                   </option>
                 );
               })}
-            </Input> 
+            </Input>
             {productId && (
               <Switch
                 id="isActive"
                 height={"100%"}
                 name="isActive"
                 label="Ativo"
+                defaultChecked={getValues("isActive")}
                 register={register}
                 errors={errors}
                 size="lg"

@@ -10,10 +10,8 @@ import {
   TableContainer,
   Button,
   Tag,
-  useBreakpointValue,
   Box,
   Flex,
-  Input,
   Stack,
   Divider,
 } from "@chakra-ui/react";
@@ -21,22 +19,20 @@ import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../services/axios";
-import { ICategory } from "../../types";
+import { IPaymentMethod } from "../../types";
 
-const Categories = () => {
-  const variant = useBreakpointValue({ base: false, md: true });
-
-  const [categories, setCategories] = useState<ICategory[]>([]);
+const Methods = () => {
+  const [methods, setMethods] = useState<IPaymentMethod[]>([]);
 
   useEffect(() => {
-    getCategories();
+    getMethods();
   }, []);
 
-  const getCategories = async () => {
+  const getMethods = async () => {
     await api
-      .get(`/categories`)
-      .then(({ data }: AxiosResponse<ICategory[]>) => {
-        setCategories(data);
+      .get(`/methods`)
+      .then(({ data }: AxiosResponse<IPaymentMethod[]>) => {
+        setMethods(data);
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -45,23 +41,16 @@ const Categories = () => {
 
   return (
     <Box w={"100%"} as={Stack} spacing={"8"}>
-      <Flex>
-        <Stack
-          direction={["column", "row"]}
-          spacing={"4"}
-          w="100%"
-          justifyContent={"flex-end"}
+      <Flex justifyContent={"end"}>
+        <Button
+          leftIcon={<AddIcon />}
+          px="8"
+          colorScheme={"yellow"}
+          as={Link}
+          to="method"
         >
-          <Button
-            leftIcon={<AddIcon />}
-            px="8"
-            colorScheme={"yellow"}
-            as={Link}
-            to="category"
-          >
-            Adicionar Categoria
-          </Button>
-        </Stack>
+          Adicionar Método
+        </Button>
       </Flex>
       <Divider />
       <TableContainer w="100%">
@@ -74,12 +63,12 @@ const Categories = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {categories.map((category) => {
+            {methods.map((method) => {
               return (
-                <Tr key={category.id}>
-                  <Td>{category.category}</Td>
+                <Tr key={method.id}>
+                  <Td>{method.method}</Td>
                   <Td textAlign="center">
-                    {category.isActive ? (
+                    {method.isActive ? (
                       <Tag colorScheme={"green"}>SIM</Tag>
                     ) : (
                       <Tag colorScheme={"red"}>NAO</Tag>
@@ -107,4 +96,4 @@ const Categories = () => {
   );
 };
 
-export { Categories };
+export { Methods };

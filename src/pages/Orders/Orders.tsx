@@ -3,14 +3,12 @@ import {
   Button,
   Box,
   Flex,
-  Input,
   Stack,
   Divider,
   Grid,
   useDisclosure,
   useToast,
   Select,
-  FormLabel,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -85,7 +83,7 @@ const Orders = () => {
 
   const getOrders = async () => {
     await api
-      .get(`/orders`)
+      .get(`/orders/?perPage`)
       .then(({ data }: AxiosResponse<IPaginate<IOrder>>) => {
         setOrders(data.data);
       })
@@ -119,7 +117,16 @@ const Orders = () => {
         </Stack>
       </Flex>
       <Divider />
-      <Grid templateColumns={["repeat(2, 1fr)", "repeat(5, 1fr)"]} gap={6}>
+      <Grid
+        templateColumns={[
+          "repeat(2, 1fr)",
+          "repeat(2, 1fr)",
+          "repeat(3, 1fr)",
+          "repeat(4, 1fr)",
+          "repeat(5, 1fr)",
+        ]}
+        gap={6}
+      >
         {orders.map((order) => {
           return (
             <OrderCard

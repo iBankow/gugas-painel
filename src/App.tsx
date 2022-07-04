@@ -9,7 +9,7 @@ export const App = () => (
   <ChakraProvider theme={theme}>
     <AuthProvider>
       <SidebarDrawerProvider>
-        <ColorModeSwitcher position={"absolute"} right={4} bottom={4} />
+        <ColorModeSwitcher position={"fixed"} right={4} bottom={4} />
         <Index />
       </SidebarDrawerProvider>
     </AuthProvider>
