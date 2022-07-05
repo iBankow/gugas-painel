@@ -27,15 +27,19 @@ import { IPaymentMethod, IProduct } from "../../types";
 interface IError {
   message: string;
 }
+
 interface IResponseError {
   errors: IError[];
 }
+
+interface Product {
+  quantity: number;
+  productId: string;
+  price?: number;
+}
+
 type ItemsFormProps = {
-  items: {
-    quantity: number;
-    productId: string;
-    price?: number;
-  }[];
+  items: Product[];
   subTotal: number;
   methodId: string;
   status: string;

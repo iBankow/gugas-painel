@@ -27,6 +27,7 @@ import { api } from "../../services/axios";
 import { IMeta, IPaginate, IProduct } from "../../types";
 import { IoMdCreate, IoMdEye } from "react-icons/io";
 import { ProductModal } from "./components/ProductModal";
+import Pagination from "@choc-ui/paginator";
 
 const Products = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -160,6 +161,17 @@ const Products = () => {
           </Tfoot>
         </Table>
       </TableContainer>
+      <Flex w="full" py={26} alignItems="center" justifyContent="center">
+        <Pagination
+          defaultCurrent={1}
+          total={meta.total || 10}
+          onChange={(currentPage = 0) => {
+            setMeta({ ...meta, current_page: currentPage });
+          }}
+          paginationProps={{ display: "flex" }}
+          pageSize={meta.per_page}
+        />
+      </Flex>
       {product && (
         <ProductModal isOpen={isOpen} onClose={onClose} product={product} />
       )}

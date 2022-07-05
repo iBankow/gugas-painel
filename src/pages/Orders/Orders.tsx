@@ -9,21 +9,29 @@ import {
   useDisclosure,
   useToast,
   Select,
+  Spinner,
+  Center,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../services/axios";
-import { IOrder, IPaginate } from "../../types";
+import { IMeta, IOrder, IPaginate } from "../../types";
 import { OrderAlertDialog } from "./components/OrderAlertDialog";
 import { OrderCard } from "./components/OrderCard";
 import { OrderModal } from "./components/OrderMotal";
+import Pagination from "@choc-ui/paginator";
 
 const Orders = () => {
   const toast = useToast();
   const [orders, setOrders] = useState<IOrder[]>([]);
+  const [meta, setMeta] = useState<IMeta>({
+    current_page: 1,
+    per_page: 10,
+  } as IMeta);
   const [order, setOrder] = useState<IOrder | null>(null);
   const [load, setLoad] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const {
     isOpen: isOpenModal,
@@ -34,8 +42,23 @@ const Orders = () => {
   const cancelRef = useRef(null);
 
   useEffect(() => {
+    const getOrders = async () => {
+      setLoading(false);
+      await api
+        .get(`/orders/?page=${meta.current_page}&perPage=${meta.per_page}`)
+        .then(({ data }: AxiosResponse<IPaginate<IOrder>>) => {
+          setOrders(data.data);
+          setMeta(data.meta);
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
     getOrders();
-  }, [load]);
+  }, [load, meta.current_page, meta.per_page]);
 
   const handleDeleteOrder = async () => {
     await api
@@ -81,17 +104,6 @@ const Orders = () => {
     onCloseModal();
   };
 
-  const getOrders = async () => {
-    await api
-      .get(`/orders/?perPage`)
-      .then(({ data }: AxiosResponse<IPaginate<IOrder>>) => {
-        setOrders(data.data);
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-      });
-  };
-
   return (
     <Box w={"100%"} as={Stack} spacing={"8"}>
       <Flex>
@@ -102,8 +114,8 @@ const Orders = () => {
           justifyContent={"space-between"}
         >
           <Select placeholder="Filtrar Vendas" w={["100%", "300px"]}>
-            <option value="paid">PAGO</option>
-            <option value="not_paid">NAO PAGO</option>
+            <option value="paid">Pago</option>
+            <option value="not_paid">Nao Pago</option>
           </Select>
           <Button
             leftIcon={<AddIcon />}
@@ -117,27 +129,46 @@ const Orders = () => {
         </Stack>
       </Flex>
       <Divider />
-      <Grid
-        templateColumns={[
-          "repeat(2, 1fr)",
-          "repeat(2, 1fr)",
-          "repeat(3, 1fr)",
-          "repeat(4, 1fr)",
-          "repeat(5, 1fr)",
-        ]}
-        gap={6}
-      >
-        {orders.map((order) => {
-          return (
-            <OrderCard
-              order={order}
-              key={order.id}
-              onOpenDelete={handleOpenDialog}
-              onOpenView={handleOpenModal}
+      {loading ? (
+        <Center h="100%">
+          <Spinner size={"xl"} />
+        </Center>
+      ) : (
+        <>
+          <Grid
+            templateColumns={[
+              "repeat(2, 1fr)",
+              "repeat(2, 1fr)",
+              "repeat(3, 1fr)",
+              "repeat(4, 1fr)",
+              "repeat(5, 1fr)",
+            ]}
+            gap={6}
+          >
+            {orders.map((order) => {
+              return (
+                <OrderCard
+                  order={order}
+                  key={order.id}
+                  onOpenDelete={handleOpenDialog}
+                  onOpenView={handleOpenModal}
+                />
+              );
+            })}
+          </Grid>
+          <Flex w="full" py={26} alignItems="center" justifyContent="center">
+            <Pagination
+              defaultCurrent={1}
+              total={meta.total || 10}
+              onChange={(currentPage = 0) => {
+                setMeta({ ...meta, current_page: currentPage });
+              }}
+              paginationProps={{ display: "flex" }}
+              pageSize={meta.per_page}
             />
-          );
-        })}
-      </Grid>
+          </Flex>
+        </>
+      )}
       <OrderAlertDialog
         onClose={handleCloseDialog}
         onDelete={handleDeleteOrder}

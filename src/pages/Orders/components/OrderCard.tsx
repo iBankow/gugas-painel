@@ -91,4 +91,4 @@ const OrderCard = ({ order, onOpenDelete, onOpenView }: OrderCardProps) => {
   );
 };
 
-export { OrderCard };
+export { OrderCard, StatusTag };

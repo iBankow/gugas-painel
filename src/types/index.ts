@@ -16,7 +16,7 @@ export interface ICategory {
   updatedAt: string;
 }
 
-export interface IProduct {
+export interface IProduct<Meta = any> {
   id: string;
   categoryId: string;
   createdBy: string;
@@ -29,6 +29,7 @@ export interface IProduct {
   category: ICategory;
   price: IProductPrice;
   stock: IProductStock;
+  meta?: Meta;
 }
 
 export interface IProductPrice {
@@ -54,6 +55,13 @@ export interface IPaymentMethod {
   createdAt: Date;
 }
 
+export interface IOrderMeta {
+  pivot_order_id: string;
+  pivot_price: number;
+  pivot_product_id: string;
+  pivot_quantity: number;
+}
+
 export interface IOrder {
   id: string;
   methodId: string;
@@ -64,7 +72,7 @@ export interface IOrder {
   createdAt: string;
   updatedAt: string;
   method: IPaymentMethod;
-  products: IProduct[];
+  products: IProduct<IOrderMeta>[];
 }
 
 export interface IPaginate<Model> {
