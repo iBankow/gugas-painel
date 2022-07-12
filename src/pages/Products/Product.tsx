@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Input } from "../../components/Form/Input";
+import { InputMask } from "../../components/Form/InputMask";
 import { NumberInput } from "../../components/Form/NumberField";
 import { Switch } from "../../components/Form/Switch";
 import { api } from "../../services/axios";
@@ -24,7 +25,7 @@ import { ICategory, IProduct } from "../../types";
 interface ProductForm {
   name: string;
   description?: string;
-  price: number;
+  price: string;
   quantity: number;
   categoryId: string;
   isActive: boolean;
@@ -48,29 +49,30 @@ const Product = () => {
 
   useEffect(() => {
     if (productId) {
+      const getData = async () => {
+        await api
+          .get(`/products/${productId}`)
+          .then(({ data }: AxiosResponse<IProduct>) => {
+            const product = {
+              name: data.name,
+              categoryId: data.categoryId,
+              description: data.description,
+              isActive: data.isActive,
+              price: new Intl.NumberFormat("pt-BR", {
+                minimumFractionDigits: 2,
+              }).format(Number(data.price.price)),
+              quantity: data.stock.quantity,
+            };
+            reset(product);
+          })
+          .catch((error: AxiosError) => {
+            console.log(error);
+          });
+      };
       getData();
     }
     getCategories();
-  }, [productId]);
-
-  const getData = async () => {
-    await api
-      .get(`/products/${productId}`)
-      .then(({ data }: AxiosResponse<IProduct>) => {
-        const product = {
-          name: data.name,
-          description: data.description,
-          price: data.price.price,
-          quantity: data.stock.quantity,
-          categoryId: data.categoryId,
-          isActive: data.isActive,
-        };
-        reset(product);
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-      });
-  };
+  }, [productId, reset]);
 
   const getCategories = async () => {
     await api
@@ -84,9 +86,12 @@ const Product = () => {
   };
 
   const onSubmit = async (value: ProductForm) => {
+    const productValue = String(value.price)
+      .replaceAll(",", "")
+      .replaceAll(".", "");
     if (productId) {
       await api
-        .put(`/products/${productId}`, value)
+        .put(`/products/${productId}`, { ...value, price: +productValue / 100 })
         .then(() => {
           toast({
             title: "Produto atualizado com sucesso.",
@@ -107,7 +112,7 @@ const Product = () => {
         });
     } else {
       await api
-        .post("/products", value)
+        .post("/products", { ...value, price: +productValue / 100 })
         .then(() => {
           toast({
             title: "Produto criado com sucesso.",
@@ -177,10 +182,9 @@ const Product = () => {
               errors={errors}
               required
             />
-            <Input
+            <InputMask
               name="price"
-              type={"number"}
-              label="Preco"
+              label="Preço"
               placeholder="Preco do produto"
               register={register}
               errors={errors}
@@ -219,8 +223,8 @@ const Product = () => {
                 height={"100%"}
                 name="isActive"
                 label="Ativo"
-                defaultChecked={getValues("isActive")}
                 register={register}
+                defaultChecked={getValues("isActive")}
                 errors={errors}
                 size="lg"
                 colorScheme={"blue"}

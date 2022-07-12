@@ -2,11 +2,9 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  forwardRef,
   Switch as ChakraInput,
   SwitchProps as ChakraInputProps,
 } from "@chakra-ui/react";
-import { ForwardRefRenderFunction } from "react";
 import { UseFormRegister } from "react-hook-form";
 
 interface InputProps extends ChakraInputProps {
@@ -33,9 +31,7 @@ const InputBase = ({
       <ChakraInput
         id={name}
         placeholder={placeholder}
-        {...register(name, {
-          required: required,
-        })}
+        {...register(name)}
         {...rest}
       />
       {errors && (

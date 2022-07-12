@@ -1,16 +1,25 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+// import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+// import { useAuth } from "../contexts/authContext";
 import { Login } from "../pages/Login/Login";
+import { Menu } from "../pages/Menu/Menu";
 
 const Auth = () => {
+  // const { isAuthenticated } = useAuth();
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login");
+  //   }
+  // }, [isAuthenticated, navigate]);
+
   return (
     <Routes>
+      <Route path="/menu" element={<Menu />} />
       <Route index element={<Login />} />
     </Routes>
   );
-};
-
-const Redirect = () => {
-  return <Navigate to="/login" replace={false} />;
 };
 
 export { Auth };

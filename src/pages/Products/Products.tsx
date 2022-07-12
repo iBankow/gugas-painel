@@ -1,4 +1,4 @@
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Table,
   Thead,
@@ -40,20 +40,19 @@ const Products = () => {
   } as IMeta);
 
   useEffect(() => {
+    const getProducts = async () => {
+      await api
+        .get(`/products/?page=${meta.current_page}&perPage=${meta.per_page}`)
+        .then(({ data }: AxiosResponse<IPaginate<IProduct>>) => {
+          setProducts(data.data);
+          setMeta(data.meta);
+        })
+        .catch((error: AxiosError) => {
+          console.log(error);
+        });
+    };
     getProducts();
-  }, []);
-
-  const getProducts = async () => {
-    await api
-      .get(`/products/?page=${meta.current_page}&perPage=${meta.per_page}`)
-      .then(({ data }: AxiosResponse<IPaginate<IProduct>>) => {
-        setProducts(data.data);
-        setMeta(data.meta);
-      })
-      .catch((error: AxiosError) => {
-        console.log(error);
-      });
-  };
+  }, [meta.current_page, meta.per_page]);
 
   return (
     <Box w={"100%"} as={Stack} spacing={"8"}>

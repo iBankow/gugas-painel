@@ -139,7 +139,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         localStorage.removeItem(STORAGE_USER);
         localStorage.removeItem(TOKEN_API);
         setUser(null);
-        navigate("/");
+        navigate("/login");
       })
       .finally(() => {
         setLoading(false);

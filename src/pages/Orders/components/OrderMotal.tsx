@@ -1,8 +1,6 @@
 import {
-  AspectRatio,
   Button,
   Divider,
-  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,14 +15,12 @@ import {
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import format from "date-fns/format";
 import ptBr from "date-fns/locale/pt-BR";
-import { Link } from "react-router-dom";
 import { IOrder } from "../../../types";
 import { StatusTag } from "./OrderCard";
 
@@ -36,9 +32,6 @@ interface OrderModalProps {
 
 const OrderModal = ({ order, isOpen, onClose }: OrderModalProps) => {
   const createdAt = format(new Date(order?.createdAt || 0), "dd/MM/yyyy", {
-    locale: ptBr,
-  });
-  const updatedAt = format(new Date(order?.updatedAt || 0), "dd/MM/yyyy", {
     locale: ptBr,
   });
   return (
@@ -88,7 +81,7 @@ const OrderModal = ({ order, isOpen, onClose }: OrderModalProps) => {
                 <Tbody>
                   {order?.products.map((product) => {
                     return (
-                      <Tr>
+                      <Tr key={product.id}>
                         <Td>{product.name}</Td>
                         <Td>
                           {Intl.NumberFormat("pt-br", {

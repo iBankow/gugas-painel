@@ -3,9 +3,9 @@ import App from "./app.routes";
 import { Auth } from "./auth.routes";
 
 const Index = () => {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  return user ? <App /> : <Auth />;
+  return isAuthenticated ? <App /> : <Auth />;
 };
 
 export { Index };
