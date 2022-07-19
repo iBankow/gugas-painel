@@ -1,4 +1,4 @@
-import { As, Icon, IconProps, Link, Text } from "@chakra-ui/react";
+import { As, Icon, Link, Text } from "@chakra-ui/react";
 
 import {
   Link as RouterLink,

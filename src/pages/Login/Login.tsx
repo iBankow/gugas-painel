@@ -93,7 +93,6 @@ const Login = () => {
                 <Input
                   {...register("email", {
                     required: "Email obrigatorio!",
-                    pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
                   })}
                   placeholder={"Email"}
                   type={"email"}

@@ -24,7 +24,7 @@ const Menu = () => {
     };
     getProducts();
     getCategories();
-  }, [meta.current_page, meta.per_page]);
+  }, [meta.current_page, meta.per_page, selectedCategory]);
 
   const getCategories = async () => {
     await api

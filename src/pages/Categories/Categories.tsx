@@ -10,10 +10,8 @@ import {
   TableContainer,
   Button,
   Tag,
-  useBreakpointValue,
   Box,
   Flex,
-  Input,
   Stack,
   Divider,
 } from "@chakra-ui/react";
@@ -24,8 +22,6 @@ import { api } from "../../services/axios";
 import { ICategory } from "../../types";
 
 const Categories = () => {
-  const variant = useBreakpointValue({ base: false, md: true });
-
   const [categories, setCategories] = useState<ICategory[]>([]);
 
   useEffect(() => {

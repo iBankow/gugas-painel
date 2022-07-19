@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon, ViewIcon, UnlockIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   Divider,
   GridItem,

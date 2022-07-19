@@ -52,6 +52,7 @@ const Order = () => {
   const [methods, setMethods] = useState<IPaymentMethod[]>([]);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [load, setLoad] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const {
     register,
     handleSubmit,
@@ -127,8 +128,7 @@ const Order = () => {
 
   useEffect(() => {
     calculateSubtotal();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fields, load]);
+  }, [fields, load, calculateSubtotal]);
 
   const getProducts = async () => {
     await api
@@ -199,6 +199,7 @@ const Order = () => {
                   colorScheme={"red"}
                   onChange={(e) => {
                     setValue(`items.${index}.productId`, e.target.value);
+                    setSelectedProducts(getValues('items').map(item => item.productId))
                     setLoad(!load);
                   }}
                 >
@@ -210,6 +211,7 @@ const Order = () => {
                         onClick={() => {
                           console.log("eae");
                         }}
+                        disabled={selectedProducts.includes(product.id)}
                       >
                         {product.name}
                       </option>
