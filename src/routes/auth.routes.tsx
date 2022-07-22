@@ -17,6 +17,7 @@ const Auth = () => {
   return (
     <Routes>
       <Route path="/menu" element={<Menu />} />
+      <Route path="/menu/:categorySlug" element={<Menu />} />
       <Route index element={<Login />} />
     </Routes>
   );

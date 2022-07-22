@@ -10,6 +10,7 @@ export interface IUser {
 export interface ICategory {
   id: string;
   category: string;
+  slug?: string;
   image?: string;
   isActive: boolean;
   createdAt: string;

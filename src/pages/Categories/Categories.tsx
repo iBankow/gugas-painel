@@ -14,9 +14,12 @@ import {
   Flex,
   Stack,
   Divider,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
+import { IoMdCreate } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { api } from "../../services/axios";
 import { ICategory } from "../../types";
@@ -82,9 +85,16 @@ const Categories = () => {
                     )}
                   </Td>
                   <Td textAlign="right">
-                    <Button colorScheme={"yellow"} size="sm">
-                      Editar
-                    </Button>
+                    <Tooltip label="Editar Categoria">
+                      <IconButton
+                        as={Link}
+                        to={`category/${category.id}`}
+                        colorScheme="blue"
+                        aria-label="Edit Category"
+                        size={"sm"}
+                        icon={<IoMdCreate fontSize={16} />}
+                      />
+                    </Tooltip>
                   </Td>
                 </Tr>
               );

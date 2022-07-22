@@ -208,9 +208,6 @@ const Order = () => {
                       <option
                         key={product.id}
                         value={product.id}
-                        onClick={() => {
-                          console.log("eae");
-                        }}
                         disabled={selectedProducts.includes(product.id)}
                       >
                         {product.name}
