@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../services/axios";
 import { createStandaloneToast } from "@chakra-ui/react";
 import theme from "../theme/theme";
@@ -56,6 +56,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(false);
   const isAuthenticated = !!user;
+
+  const navigate = useNavigate();
+  const location: any = useLocation();
 
   useEffect(() => {
     async function loadStorageData() {
@@ -116,6 +119,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .then(({ data }: AxiosResponse<LoginResponse>) => {
           const { token, user } = data;
           setUser(user);
+          const origin = location.state?.from?.pathname || "/";
+          navigate(origin);
           api.defaults.headers.common.Authorization = `Bearer ${token.token}`;
           localStorage.setItem(STORAGE_USER, JSON.stringify({ user }));
           localStorage.setItem(TOKEN_API, token.token);
@@ -128,8 +133,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
     });
   }
-
-  const navigate = useNavigate();
 
   async function logout() {
     setLoading(true);
