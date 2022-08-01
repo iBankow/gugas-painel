@@ -40,6 +40,7 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
           required: required,
         })}
         {...rest}
+        ref={ref}
       />
       {errors && (
         <FormErrorMessage>

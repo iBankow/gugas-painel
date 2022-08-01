@@ -52,7 +52,7 @@ const Method = () => {
   return (
     <Box w={"100%"}>
       <Stack marginBottom={"8"}>
-        <Heading>Criar uma nova Categoria</Heading>
+        <Heading>Criar um novo Metodo</Heading>
       </Stack>
       <Divider />
       <Box as={"form"} onSubmit={handleSubmit(onSubmit)} marginTop={"8"}>
@@ -60,7 +60,7 @@ const Method = () => {
           <Input
             name="method"
             label="Nome"
-            placeholder="Nome da Categoria"
+            placeholder="Nome do Metotdo"
             register={register}
             errors={errors}
             required

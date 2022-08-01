@@ -18,9 +18,10 @@ import {
 import { EmailIcon, LockIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { Logo } from "../../components/Logo";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "../../contexts/authContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Inputs = {
   email: string;
@@ -28,11 +29,12 @@ type Inputs = {
 };
 
 const Login = () => {
-  const { signIn } = useAuth();
-  const { colorMode } = useColorMode();
+  const navigate = useNavigate();
   const toast = useToast();
+  const { signIn, isAuthenticated } = useAuth();
+  const { state }: any = useLocation();
+  const { colorMode } = useColorMode();
   const [handleShowPassword, setHandleShowPassword] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -47,6 +49,7 @@ const Login = () => {
           duration: 9000,
           isClosable: true,
         });
+        navigate(state?.path || "/");
       })
       .catch((error) => {
         toast({
@@ -59,6 +62,12 @@ const Login = () => {
         console.log(error.message);
       });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(state?.path || "/");
+    }
+  });
 
   return (
     <Box
