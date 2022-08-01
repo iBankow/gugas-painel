@@ -17,7 +17,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "../../components/Form/Input";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +52,7 @@ const Order = () => {
   const [methods, setMethods] = useState<IPaymentMethod[]>([]);
   const [subTotal, setSubTotal] = useState<number>(0);
   const [load, setLoad] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([])
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const {
     register,
     handleSubmit,
@@ -107,7 +107,7 @@ const Order = () => {
     getMethods();
   }, []);
 
-  const calculateSubtotal = () => {
+  const calculateSubtotal = useCallback(() => {
     const values = getValues();
     var prevSubTotal: number = 0;
     values.items.forEach((field, index) => {
@@ -124,7 +124,7 @@ const Order = () => {
     });
     setSubTotal(prevSubTotal);
     setValue("subTotal", +prevSubTotal);
-  };
+  }, [getValues, products, setValue]);
 
   useEffect(() => {
     calculateSubtotal();
@@ -199,7 +199,9 @@ const Order = () => {
                   colorScheme={"red"}
                   onChange={(e) => {
                     setValue(`items.${index}.productId`, e.target.value);
-                    setSelectedProducts(getValues('items').map(item => item.productId))
+                    setSelectedProducts(
+                      getValues("items").map((item) => item.productId)
+                    );
                     setLoad(!load);
                   }}
                 >

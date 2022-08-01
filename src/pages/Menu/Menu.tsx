@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import Pagination from "@choc-ui/paginator";
 import { AxiosResponse } from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Logo } from "../../components/Logo";
 import { api } from "../../services/axios";
@@ -33,8 +33,7 @@ const Menu = () => {
     per_page: 20,
   } as IMeta);
 
-  const getProducts = async () => {
-    console.log(categorySlug);
+  const getProducts = useCallback(async () => {
     await api
       .get(
         `/products/?page=${meta.current_page}&perPage=${meta.per_page}${
@@ -45,17 +44,7 @@ const Menu = () => {
         setProducts(data.data);
         setMeta(data.meta);
       });
-  };
-
-  useEffect(() => {
-    getProducts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, meta.current_page, meta.per_page]);
-
-  useEffect(() => {
-    getCategories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategory, meta.current_page, meta.per_page]);
+  }, [categorySlug, meta.current_page, meta.per_page]);
 
   const getCategories = async () => {
     await api
@@ -64,6 +53,14 @@ const Menu = () => {
         setCategories(data);
       });
   };
+
+  useEffect(() => {
+    getProducts();
+  }, [selectedCategory, getProducts]);
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   return (
     <Box maxW={"1280px"} minH="100vh" mx="auto" px={"4"}>

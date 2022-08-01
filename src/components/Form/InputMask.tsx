@@ -43,7 +43,7 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
   }, []);
 
   return (
-    <FormControl isInvalid={errors[name]}>
+    <FormControl isInvalid={errors[name]} ref={ref}>
       {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
       <InputGroup>
         <InputLeftElement
@@ -60,7 +60,6 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
             required: required,
           })}
           {...rest}
-          ref={ref}
         />
       </InputGroup>
 

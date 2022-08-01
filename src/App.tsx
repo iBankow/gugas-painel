@@ -4,14 +4,14 @@ import theme from "./theme/theme";
 import { ColorModeSwitcher } from "./components/ColorModeSwitcher";
 import { AuthProvider } from "./contexts/authContext";
 import { SidebarDrawerProvider } from "./contexts/sidebarDrawerContext";
-import { Navigation } from "./routes/new.routes";
+import { AppRoutes } from "./routes/app.routes";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
     <AuthProvider>
       <SidebarDrawerProvider>
         <ColorModeSwitcher position={"fixed"} right={4} bottom={4} />
-        <Navigation />
+        <AppRoutes />
       </SidebarDrawerProvider>
     </AuthProvider>
   </ChakraProvider>

@@ -187,6 +187,7 @@ const Product = () => {
               label="Preço"
               placeholder="Preco do produto"
               register={register}
+              defaultValue={0}
               errors={errors}
               required
             />

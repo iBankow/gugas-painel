@@ -1,5 +1,11 @@
 import { Box, Icon, Link, Stack, Text } from "@chakra-ui/react";
-import { IoIosApps, IoIosListBox, IoIosPricetags, IoMdCash } from "react-icons/io";
+import {
+  IoIosApps,
+  IoIosHome,
+  IoIosListBox,
+  IoIosPricetags,
+  IoMdCash,
+} from "react-icons/io";
 import { RiDashboardLine } from "react-icons/ri";
 import { SideBarLink } from "./SideBarLink";
 
@@ -11,6 +17,7 @@ const SidebarNav = () => {
           CADASTROS
         </Text>
         <Stack spacing={"4"} mt={"8"} align={"stretch"}>
+          <SideBarLink icon={IoIosHome} route="/" label="Inicio" end={true} />
           <SideBarLink icon={IoIosListBox} route="/products" label="Produtos" />
           <SideBarLink
             icon={IoIosPricetags}
