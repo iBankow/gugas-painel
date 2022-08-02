@@ -46,7 +46,7 @@ const Login = () => {
         toast({
           title: "Login Realizado!",
           status: "success",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         navigate(state?.path || "/");
@@ -56,7 +56,7 @@ const Login = () => {
           title: "Algo inesperado aconteceu!",
           description: "Tente novamente em alguns instantes",
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         console.log(error.message);
@@ -90,7 +90,7 @@ const Login = () => {
           as="form"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Logo name={"Gugas"} />
+          <Logo name={"Gugas"} fontSize={'6xl'} />
           <Divider />
           <Stack spacing={4} w={"100%"}>
             <FormControl isInvalid={Boolean(errors.email)}>
@@ -115,6 +115,11 @@ const Login = () => {
                   pointerEvents="none"
                   children={<LockIcon color="gray.300" />}
                 />
+                <Input
+                  {...register("password", { required: "Senha obrigatoria!" })}
+                  placeholder={"Password"}
+                  type={!handleShowPassword ? "password" : "text"}
+                />
                 <InputRightElement
                   zIndex={1000}
                   as={"button"}
@@ -131,11 +136,6 @@ const Login = () => {
                       color="gray.300"
                     />
                   }
-                />
-                <Input
-                  {...register("password", { required: "Senha obrigatoria!" })}
-                  placeholder={"Password"}
-                  type={!handleShowPassword ? "password" : "text"}
                 />
               </InputGroup>
               <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>

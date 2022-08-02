@@ -44,8 +44,8 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-const TOKEN_API = "TOKEN_API";
-const STORAGE_USER = "STORAGE_USER";
+const TOKEN_API = "@gugas:user-token-1.0.0";
+const STORAGE_USER = "@gugas:user-data-1.0.0";
 const { toast } = createStandaloneToast({
   theme,
 });
@@ -97,7 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             title: "Sessao expirada.",
             description: "Faca o login novamente.",
             status: "info",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
           localStorage.removeItem(STORAGE_USER);

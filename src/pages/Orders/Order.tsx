@@ -74,7 +74,7 @@ const Order = () => {
         toast({
           title: "Venda cadastrada com sucesso.",
           status: "success",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         navigate("/orders");
@@ -86,7 +86,7 @@ const Order = () => {
               title: "Erro de Estoque",
               description: error.message,
               status: "error",
-              duration: 9000,
+              duration: 5000,
               isClosable: true,
             });
           });
@@ -94,7 +94,7 @@ const Order = () => {
           toast({
             title: "Algo de errado ocorreu.",
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
         }

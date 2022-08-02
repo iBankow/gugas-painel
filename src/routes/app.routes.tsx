@@ -13,9 +13,10 @@ import {
   Product,
   Products,
 } from "../pages";
-import { Layout } from "./layout.routes";
 
+import { Layout } from "./layout.routes";
 import { AuthRoute } from "./auth.routes";
+import { NoMatch } from "./nomatch.routes";
 
 const AppRoutes = () => {
   return (
@@ -45,10 +46,11 @@ const AppRoutes = () => {
           </Route>
         </Route>
       </Route>
-      <Route path="menu">
-        <Route index element={<Menu />} />
-        <Route path=":categorySlug" element={<Menu />} />
+      <Route path="menu" element={<Menu />}>
+        <Route index />
+        <Route path=":categorySlug" />
       </Route>
+      <Route path="*" element={<NoMatch to='/login' />} />
     </Routes>
   );
 };

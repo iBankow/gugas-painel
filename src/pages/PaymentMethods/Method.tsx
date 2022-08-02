@@ -33,7 +33,7 @@ const Method = () => {
         toast({
           title: "Método criada com sucesso.",
           status: "success",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         navigate("/methods");
@@ -42,7 +42,7 @@ const Method = () => {
         toast({
           title: "Algo de errado ocorreu.",
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         console.log(error.message);
