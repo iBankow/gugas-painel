@@ -7,7 +7,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { Input } from "../../components/Form/Input";
@@ -31,13 +31,7 @@ const Category = () => {
     formState: { errors },
   } = useForm<CategoryForm>();
 
-  useEffect(() => {
-    if (categoryId) {
-      getData();
-    }
-  }, [categoryId, reset]);
-
-  const getData = async () => {
+  const getData = useCallback(async () => {
     await api
       .get(`/categories/${categoryId}`)
       .then(({ data }: AxiosResponse<ICategory>) => {
@@ -46,7 +40,13 @@ const Category = () => {
       .catch((error: AxiosError) => {
         console.log(error);
       });
-  };
+  }, [categoryId, reset]);
+
+  useEffect(() => {
+    if (categoryId) {
+      getData();
+    }
+  }, [categoryId, getData]);
 
   const onSubmit = async (value: CategoryForm) => {
     if (categoryId) {
@@ -56,7 +56,7 @@ const Category = () => {
           toast({
             title: "Categoria atualizada com sucesso.",
             status: "success",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
           navigate("/categories");
@@ -65,7 +65,7 @@ const Category = () => {
           toast({
             title: "Algo de errado ocorreu.",
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
           console.log(error.message);
@@ -77,7 +77,7 @@ const Category = () => {
           toast({
             title: "Categoria criada com sucesso.",
             status: "success",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
           navigate("/categories");
@@ -86,7 +86,7 @@ const Category = () => {
           toast({
             title: "Algo de errado ocorreu.",
             status: "error",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
           console.log(error.message);

@@ -67,7 +67,7 @@ const Orders = () => {
         toast({
           title: "Venda deletada com sucesso.",
           status: "success",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         handleCloseDialog();
@@ -78,7 +78,7 @@ const Orders = () => {
         toast({
           title: "Algo de errado ocorreu.",
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
       });

@@ -1,26 +1,15 @@
-// import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-// import { useAuth } from "../contexts/authContext";
-import { Login } from "../pages/Login/Login";
-import { Menu } from "../pages/Menu/Menu";
+import { useLocation, Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/authContext";
 
-const Auth = () => {
-  // const { isAuthenticated } = useAuth();
-  // const navigate = useNavigate();
+const AuthRoute = () => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     navigate("/login");
-  //   }
-  // }, [isAuthenticated, navigate]);
-
-  return (
-    <Routes>
-      <Route path="/menu" element={<Menu />} />
-      <Route path="/menu/:categorySlug" element={<Menu />} />
-      <Route index element={<Login />} />
-    </Routes>
+  return isAuthenticated === true ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" replace state={{ path: location.pathname }} />
   );
 };
 
-export { Auth };
+export { AuthRoute };

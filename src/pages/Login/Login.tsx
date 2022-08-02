@@ -18,9 +18,10 @@ import {
 import { EmailIcon, LockIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 import { Logo } from "../../components/Logo";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "../../contexts/authContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Inputs = {
   email: string;
@@ -28,11 +29,12 @@ type Inputs = {
 };
 
 const Login = () => {
-  const { signIn } = useAuth();
-  const { colorMode } = useColorMode();
+  const navigate = useNavigate();
   const toast = useToast();
+  const { signIn, isAuthenticated } = useAuth();
+  const { state }: any = useLocation();
+  const { colorMode } = useColorMode();
   const [handleShowPassword, setHandleShowPassword] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -44,21 +46,28 @@ const Login = () => {
         toast({
           title: "Login Realizado!",
           status: "success",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
+        navigate(state?.path || "/");
       })
       .catch((error) => {
         toast({
           title: "Algo inesperado aconteceu!",
           description: "Tente novamente em alguns instantes",
           status: "error",
-          duration: 9000,
+          duration: 5000,
           isClosable: true,
         });
         console.log(error.message);
       });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(state?.path || "/");
+    }
+  });
 
   return (
     <Box
@@ -81,7 +90,7 @@ const Login = () => {
           as="form"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Logo name={"Gugas"} />
+          <Logo name={"Gugas"} fontSize={'6xl'} />
           <Divider />
           <Stack spacing={4} w={"100%"}>
             <FormControl isInvalid={Boolean(errors.email)}>
@@ -106,6 +115,11 @@ const Login = () => {
                   pointerEvents="none"
                   children={<LockIcon color="gray.300" />}
                 />
+                <Input
+                  {...register("password", { required: "Senha obrigatoria!" })}
+                  placeholder={"Password"}
+                  type={!handleShowPassword ? "password" : "text"}
+                />
                 <InputRightElement
                   zIndex={1000}
                   as={"button"}
@@ -122,11 +136,6 @@ const Login = () => {
                       color="gray.300"
                     />
                   }
-                />
-                <Input
-                  {...register("password", { required: "Senha obrigatoria!" })}
-                  placeholder={"Password"}
-                  type={!handleShowPassword ? "password" : "text"}
                 />
               </InputGroup>
               <FormErrorMessage>{errors?.password?.message}</FormErrorMessage>

@@ -56,7 +56,7 @@ const Categories = () => {
             px="8"
             colorScheme={"yellow"}
             as={Link}
-            to="category"
+            to="new-category"
           >
             Adicionar Categoria
           </Button>
@@ -88,7 +88,7 @@ const Categories = () => {
                     <Tooltip label="Editar Categoria">
                       <IconButton
                         as={Link}
-                        to={`category/${category.id}`}
+                        to={`${category.id}`}
                         colorScheme="blue"
                         aria-label="Edit Category"
                         size={"sm"}

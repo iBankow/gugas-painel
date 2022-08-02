@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../services/axios";
 import { createStandaloneToast } from "@chakra-ui/react";
 import theme from "../theme/theme";
@@ -44,8 +44,8 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-const TOKEN_API = "TOKEN_API";
-const STORAGE_USER = "STORAGE_USER";
+const TOKEN_API = "@gugas:user-token-1.0.0";
+const STORAGE_USER = "@gugas:user-data-1.0.0";
 const { toast } = createStandaloneToast({
   theme,
 });
@@ -56,6 +56,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(false);
   const isAuthenticated = !!user;
+
+  const navigate = useNavigate();
+  const location: any = useLocation();
 
   useEffect(() => {
     async function loadStorageData() {
@@ -94,7 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             title: "Sessao expirada.",
             description: "Faca o login novamente.",
             status: "info",
-            duration: 9000,
+            duration: 5000,
             isClosable: true,
           });
           localStorage.removeItem(STORAGE_USER);
@@ -116,6 +119,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         .then(({ data }: AxiosResponse<LoginResponse>) => {
           const { token, user } = data;
           setUser(user);
+          const origin = location.state?.from?.pathname || "/";
+          navigate(origin);
           api.defaults.headers.common.Authorization = `Bearer ${token.token}`;
           localStorage.setItem(STORAGE_USER, JSON.stringify({ user }));
           localStorage.setItem(TOKEN_API, token.token);
@@ -128,8 +133,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         });
     });
   }
-
-  const navigate = useNavigate();
 
   async function logout() {
     setLoading(true);

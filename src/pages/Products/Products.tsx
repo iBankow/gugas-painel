@@ -69,7 +69,7 @@ const Products = () => {
             px="8"
             colorScheme={"yellow"}
             as={Link}
-            to="product"
+            to="new-product"
           >
             Adicionar Produto
           </Button>
@@ -123,7 +123,7 @@ const Products = () => {
                       <Tooltip label="Editar Produto">
                         <IconButton
                           as={Link}
-                          to={`product/${product.id}`}
+                          to={`/products/${product.id}`}
                           colorScheme="blue"
                           aria-label="Edit product"
                           size={"sm"}

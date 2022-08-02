@@ -20,15 +20,18 @@ interface InputProps extends ChakraInputProps {
   errors: any;
 }
 
-const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
-  label,
-  register,
-  required = false,
-  errors,
-  name,
-  placeholder,
-  ...rest
-}: InputProps) => {
+const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
+  {
+    label,
+    register,
+    required = false,
+    errors,
+    name,
+    placeholder,
+    ...rest
+  }: InputProps,
+  ref
+) => {
   const handleKeyUp = useCallback((e: React.FormEvent<HTMLInputElement>) => {
     let value = e.currentTarget.value;
     value = value.replaceAll(",", "");
@@ -40,7 +43,7 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = ({
   }, []);
 
   return (
-    <FormControl isInvalid={errors[name]}>
+    <FormControl isInvalid={errors[name]} ref={ref}>
       {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
       <InputGroup>
         <InputLeftElement

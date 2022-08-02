@@ -10,11 +10,12 @@ interface SideBarLinkProps {
   icon?: As<any> | undefined;
   route: string;
   label: string;
+  end?: boolean;
 }
 
-const SideBarLink = ({ icon, route, label }: SideBarLinkProps) => {
+const SideBarLink = ({ icon, route, label, end = false}: SideBarLinkProps) => {
   let resolved = useResolvedPath(route);
-  const match = useMatch({ path: resolved.pathname, end: false });
+  const match = useMatch({ path: resolved.pathname, end: end });
 
   return (
     <Link
