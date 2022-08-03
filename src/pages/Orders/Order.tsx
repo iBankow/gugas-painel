@@ -20,9 +20,9 @@ import { AxiosError, AxiosResponse } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "../../components/Form/Input";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../services/axios";
-import { IPaymentMethod, IProduct } from "../../types";
+import { IOrder, IPaymentMethod, IProduct } from "../../types";
 
 interface IError {
   message: string;
@@ -48,6 +48,7 @@ type ItemsFormProps = {
 const Order = () => {
   const toast = useToast();
   const navigate = useNavigate();
+  const { orderId } = useParams();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [methods, setMethods] = useState<IPaymentMethod[]>([]);
   const [subTotal, setSubTotal] = useState<number>(0);
@@ -59,6 +60,7 @@ const Order = () => {
     setValue,
     control,
     getValues,
+    reset,
     formState: { errors },
   } = useForm<ItemsFormProps>();
 
@@ -68,38 +70,76 @@ const Order = () => {
   });
 
   const onSubmit = async (value: any) => {
-    await api
-      .post("/sales", value)
-      .then(() => {
-        toast({
-          title: "Venda cadastrada com sucesso.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-        navigate("/orders");
-      })
-      .catch(({ response }: AxiosError<IResponseError>) => {
-        if (response?.data.errors) {
-          response?.data.errors.forEach((error) => {
+    console.log(value)
+    if (orderId) {
+      await api
+        .put(`/sales/${orderId}`, value)
+        .then(() => {
+          toast({
+            title: "Venda atualizada com sucesso.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          navigate("/orders");
+        })
+        .catch(({ response }: AxiosError<IResponseError>) => {
+          if (response?.data.errors) {
+            response?.data.errors.forEach((error) => {
+              toast({
+                title: "Erro de Estoque",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            });
+          } else {
             toast({
-              title: "Erro de Estoque",
-              description: error.message,
+              title: "Algo de errado ocorreu.",
               status: "error",
               duration: 5000,
               isClosable: true,
             });
-          });
-        } else {
+          }
+          console.log(response?.data.errors);
+        });
+    }
+    else {
+      await api
+        .post("/sales", value)
+        .then(() => {
           toast({
-            title: "Algo de errado ocorreu.",
-            status: "error",
+            title: "Venda cadastrada com sucesso.",
+            status: "success",
             duration: 5000,
             isClosable: true,
           });
-        }
-        console.log(response?.data.errors);
-      });
+          navigate("/orders");
+        })
+        .catch(({ response }: AxiosError<IResponseError>) => {
+          if (response?.data.errors) {
+            response?.data.errors.forEach((error) => {
+              toast({
+                title: "Erro de Estoque",
+                description: error.message,
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+              });
+            });
+          } else {
+            toast({
+              title: "Algo de errado ocorreu.",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+          console.log(response?.data.errors);
+        });
+    }
+
   };
 
   useEffect(() => {
@@ -107,10 +147,37 @@ const Order = () => {
     getMethods();
   }, []);
 
+
+  const getOrder = useCallback(async () => {
+    await api.get(`/orders/${orderId}`).then(({ data }: AxiosResponse<IOrder>) => {
+      const order = {
+        status: data.status,
+        methodId: data.methodId,
+        items: data.products.map(product => {
+          return {
+            price: product.meta?.pivot_price,
+            productId: product.id,
+            quantity: product.meta?.pivot_quantity
+          }
+        })
+      }
+      console.log(data)
+      setSubTotal(data.subTotal)
+      reset(order)
+    })
+  }, [orderId, reset])
+
+  useEffect(() => {
+    if (orderId) {
+      getOrder()
+    }
+  }, [getOrder, orderId]);
+
+
   const calculateSubtotal = useCallback(() => {
     const values = getValues();
     var prevSubTotal: number = 0;
-    values.items.forEach((field, index) => {
+    values?.items?.forEach((field, index) => {
       if (field.productId) {
         const product = products.find((item) => {
           if (item.id === field.productId) {

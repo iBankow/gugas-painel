@@ -43,6 +43,7 @@ const AppRoutes = () => {
           <Route path="/orders">
             <Route index element={<Orders />} />
             <Route path="order" element={<Order />} />
+            <Route path=":orderId" element={<Order />} />
           </Route>
         </Route>
       </Route>

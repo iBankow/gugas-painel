@@ -8,6 +8,7 @@ import {
   Tag,
   Text,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { IOrder } from "../../../types";
 
 interface OrderCardProps {
@@ -65,9 +66,11 @@ const OrderCard = ({ order, onOpenDelete, onOpenView }: OrderCardProps) => {
         <HStack w={"100%"} justifyContent={"space-around"} py={"2"}>
           <IconButton
             w={"100%"}
+            as={Link}
             aria-label="Edit Order"
             disabled={order.status === "paid"}
             icon={<EditIcon fontSize={18} />}
+            to={order.id}
           />
           <IconButton
             w={"100%"}
