@@ -19,7 +19,7 @@ import { api } from "../../services/axios";
 import { IMeta, IOrder, IPaginate } from "../../types";
 import { OrderAlertDialog } from "./components/OrderAlertDialog";
 import { OrderCard } from "./components/OrderCard";
-import { OrderModal } from "./components/OrderMotal";
+import { OrderModal } from "./components/OrderModal";
 import Pagination from "@choc-ui/paginator";
 
 const Orders = () => {
