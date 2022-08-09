@@ -8,7 +8,7 @@ import {
   Tag,
   Text,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IOrder } from "../../../types";
 
 interface OrderCardProps {
@@ -33,6 +33,7 @@ const StatusTag = ({ status }: StatusTagProps) => {
 };
 
 const OrderCard = ({ order, onOpenDelete, onOpenView }: OrderCardProps) => {
+  const navigate = useNavigate();
   return (
     <GridItem w="100%" h="100%">
       <Stack
@@ -66,11 +67,12 @@ const OrderCard = ({ order, onOpenDelete, onOpenView }: OrderCardProps) => {
         <HStack w={"100%"} justifyContent={"space-around"} py={"2"}>
           <IconButton
             w={"100%"}
-            as={Link}
             aria-label="Edit Order"
             disabled={order.status === "paid"}
             icon={<EditIcon fontSize={18} />}
-            to={order.id}
+            onClick={() => {
+              navigate(`${order.id}`);
+            }}
           />
           <IconButton
             w={"100%"}

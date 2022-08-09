@@ -1,4 +1,4 @@
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronRightIcon, DeleteIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -15,12 +15,15 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   IconButton,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react";
 import { AxiosError, AxiosResponse } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "../../components/Form/Input";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../../services/axios";
 import { IOrder, IPaymentMethod, IProduct } from "../../types";
 
@@ -70,7 +73,7 @@ const Order = () => {
   });
 
   const onSubmit = async (value: any) => {
-    console.log(value)
+    console.log(value);
     if (orderId) {
       await api
         .put(`/sales/${orderId}`, value)
@@ -104,8 +107,7 @@ const Order = () => {
           }
           console.log(response?.data.errors);
         });
-    }
-    else {
+    } else {
       await api
         .post("/sales", value)
         .then(() => {
@@ -139,7 +141,6 @@ const Order = () => {
           console.log(response?.data.errors);
         });
     }
-
   };
 
   useEffect(() => {
@@ -147,32 +148,32 @@ const Order = () => {
     getMethods();
   }, []);
 
-
   const getOrder = useCallback(async () => {
-    await api.get(`/orders/${orderId}`).then(({ data }: AxiosResponse<IOrder>) => {
-      const order = {
-        status: data.status,
-        methodId: data.methodId,
-        items: data.products.map(product => {
-          return {
-            price: product.meta?.pivot_price,
-            productId: product.id,
-            quantity: product.meta?.pivot_quantity
-          }
-        })
-      }
-      console.log(data)
-      setSubTotal(data.subTotal)
-      reset(order)
-    })
-  }, [orderId, reset])
+    await api
+      .get(`/orders/${orderId}`)
+      .then(({ data }: AxiosResponse<IOrder>) => {
+        const order = {
+          status: data.status,
+          methodId: data.methodId,
+          items: data.products.map((product) => {
+            return {
+              price: product.meta?.pivot_price,
+              productId: product.id,
+              quantity: product.meta?.pivot_quantity,
+            };
+          }),
+        };
+        console.log(data);
+        setSubTotal(data.subTotal);
+        reset(order);
+      });
+  }, [orderId, reset]);
 
   useEffect(() => {
     if (orderId) {
-      getOrder()
+      getOrder();
     }
   }, [getOrder, orderId]);
-
 
   const calculateSubtotal = useCallback(() => {
     const values = getValues();
@@ -222,7 +223,29 @@ const Order = () => {
   return (
     <Box w={"100%"}>
       <Stack marginBottom={"8"}>
-        <Heading>Criar Venda</Heading>
+        <Heading>{!!orderId ? "Editar" : "Criar"} Venda</Heading>
+        <Breadcrumb
+          spacing="8px"
+          separator={<ChevronRightIcon color="gray.500" />}
+        >
+          <BreadcrumbItem>
+            <BreadcrumbLink as={Link} to="/">
+              Home
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem>
+            <BreadcrumbLink as={Link} to="/orders">
+              Vendas
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+
+          <BreadcrumbItem isCurrentPage={true}>
+            <BreadcrumbLink as={Link} to={`/orders/${orderId ? orderId : "order"}`}>
+              Venda
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
       </Stack>
       <Divider />
       <Box as={"form"} onSubmit={handleSubmit(onSubmit)} marginTop={"8"}>
@@ -263,6 +286,7 @@ const Order = () => {
                   {...register(`items.${index}.productId`)}
                   placeholder="Produto"
                   required
+                  disabled={!!orderId}
                   colorScheme={"red"}
                   onChange={(e) => {
                     setValue(`items.${index}.productId`, e.target.value);
@@ -295,8 +319,10 @@ const Order = () => {
                   <NumberInputField
                     {...register(`items.${index}.quantity`)}
                     placeholder="Quantidade"
+                    disabled={!!orderId}
                   />
-                  <NumberInputStepper>
+
+                  <NumberInputStepper display={!!orderId ? "none" : "flex"}>
                     <NumberIncrementStepper />
                     <NumberDecrementStepper />
                   </NumberInputStepper>
@@ -304,6 +330,7 @@ const Order = () => {
                 <IconButton
                   colorScheme="red"
                   aria-label="View product"
+                  disabled={!!orderId}
                   size={"md"}
                   onClick={() => remove(index)}
                   icon={<DeleteIcon fontSize={18} />}
@@ -313,6 +340,7 @@ const Order = () => {
           })}
           <Button
             type="button"
+            disabled={!!orderId}
             onClick={() => {
               append({});
             }}

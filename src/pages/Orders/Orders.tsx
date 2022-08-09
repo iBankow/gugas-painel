@@ -122,7 +122,7 @@ const Orders = () => {
             px="8"
             colorScheme={"yellow"}
             as={Link}
-            to="order"
+            to="new-order"
           >
             Adicionar Venda
           </Button>
