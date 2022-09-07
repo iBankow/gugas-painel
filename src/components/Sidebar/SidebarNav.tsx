@@ -42,7 +42,7 @@ const SidebarNav = () => {
           <Link display={"flex"} alignItems={"center"}>
             <Icon as={RiDashboardLine} fontSize={"20"} />
             <Text ml={"4"} fontWeight="medium">
-              Dispesas
+              Despesas
             </Text>
           </Link>
         </Stack>
