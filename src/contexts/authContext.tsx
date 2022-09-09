@@ -44,8 +44,8 @@ type AuthProviderProps = {
   children: ReactNode;
 };
 
-const TOKEN_API = "@gugas:user-token-1.0.0";
-const STORAGE_USER = "@gugas:user-data-1.0.0";
+export const TOKEN_API = "@gugas:user-token-1.0.0";
+export const STORAGE_USER = "@gugas:user-data-1.0.0";
 const { toast } = createStandaloneToast({
   theme,
 });

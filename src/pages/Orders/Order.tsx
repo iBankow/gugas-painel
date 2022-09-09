@@ -23,9 +23,10 @@ import { AxiosError, AxiosResponse } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { Input } from "../../components/Form/Input";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { api } from "../../services/axios";
 import { IOrder, IPaymentMethod, IProduct } from "../../types";
+import { socket } from "../../services/socket";
 
 interface IError {
   message: string;
@@ -51,6 +52,7 @@ type ItemsFormProps = {
 const Order = () => {
   const toast = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { orderId } = useParams();
   const [products, setProducts] = useState<IProduct[]>([]);
   const [methods, setMethods] = useState<IPaymentMethod[]>([]);
@@ -73,17 +75,17 @@ const Order = () => {
   });
 
   const onSubmit = async (value: any) => {
-    console.log(value);
     if (orderId) {
       await api
         .put(`/sales/${orderId}`, value)
-        .then(() => {
+        .then(({ data }: AxiosResponse<IOrder>) => {
           toast({
             title: "Venda atualizada com sucesso.",
             status: "success",
             duration: 5000,
             isClosable: true,
           });
+          socket.emit("order:update", data);
           navigate("/orders");
         })
         .catch(({ response }: AxiosError<IResponseError>) => {
@@ -110,7 +112,7 @@ const Order = () => {
     } else {
       await api
         .post("/sales", value)
-        .then(() => {
+        .then(({ data }: AxiosResponse<IOrder>) => {
           toast({
             title: "Venda cadastrada com sucesso.",
             status: "success",
@@ -118,6 +120,7 @@ const Order = () => {
             isClosable: true,
           });
           navigate("/orders");
+          socket.emit("order:new", data);
         })
         .catch(({ response }: AxiosError<IResponseError>) => {
           if (response?.data.errors) {
@@ -166,8 +169,14 @@ const Order = () => {
         console.log(data);
         setSubTotal(data.subTotal);
         reset(order);
+      })
+      .catch(() => {
+        navigate("/orders/new-order", {
+          replace: true,
+          state: { path: location.pathname },
+        });
       });
-  }, [orderId, reset]);
+  }, [orderId, reset, navigate, location.pathname]);
 
   useEffect(() => {
     if (orderId) {
@@ -241,7 +250,10 @@ const Order = () => {
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage={true}>
-            <BreadcrumbLink as={Link} to={`/orders/${orderId ? orderId : "order"}`}>
+            <BreadcrumbLink
+              as={Link}
+              to={`/orders/${orderId ? orderId : "new-order"}`}
+            >
               Venda
             </BreadcrumbLink>
           </BreadcrumbItem>

@@ -90,7 +90,7 @@ const Login = () => {
           as="form"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <Logo name={"Gugas"} fontSize={'6xl'} />
+          <Logo name={"Gugas"} fontSize={"6xl"} />
           <Divider />
           <Stack spacing={4} w={"100%"}>
             <FormControl isInvalid={Boolean(errors.email)}>
@@ -123,6 +123,7 @@ const Login = () => {
                 <InputRightElement
                   zIndex={1000}
                   as={"button"}
+                  type="button"
                   borderLeft={"solid"}
                   alignSelf={"center"}
                   borderColor={"inherit"}

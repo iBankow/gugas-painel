@@ -20,10 +20,13 @@ import { IMeta, IOrder, IPaginate } from "../../types";
 import { OrderAlertDialog } from "./components/OrderAlertDialog";
 import { OrderCard } from "./components/OrderCard";
 import { OrderModal } from "./components/OrderModal";
+import { useNotification } from "../../contexts/notificationContext";
+import { socket } from "../../services/socket";
 import Pagination from "@choc-ui/paginator";
 
 const Orders = () => {
   const toast = useToast();
+  const { notification } = useNotification();
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [meta, setMeta] = useState<IMeta>({
     current_page: 1,
@@ -58,7 +61,7 @@ const Orders = () => {
         });
     };
     getOrders();
-  }, [load, meta.current_page, meta.per_page]);
+  }, [load, meta.current_page, meta.per_page, notification]);
 
   const handleDeleteOrder = async () => {
     await api
@@ -72,6 +75,7 @@ const Orders = () => {
         });
         handleCloseDialog();
         setLoad(!load);
+        socket.emit("order:delete");
       })
       .catch((error: AxiosError) => {
         console.log(error);
@@ -157,15 +161,17 @@ const Orders = () => {
             })}
           </Grid>
           <Flex w="full" py={26} alignItems="center" justifyContent="center">
-            <Pagination
-              defaultCurrent={1}
-              total={meta.total || 10}
-              onChange={(currentPage = 0) => {
-                setMeta({ ...meta, current_page: currentPage });
-              }}
-              paginationProps={{ display: "flex" }}
-              pageSize={meta.per_page}
-            />
+            {orders.length > 0 && (
+              <Pagination
+                defaultCurrent={1}
+                total={meta.total || 10}
+                onChange={(currentPage = 0) => {
+                  setMeta({ ...meta, current_page: currentPage });
+                }}
+                paginationProps={{ display: "flex" }}
+                pageSize={meta.per_page}
+              />
+            )}
           </Flex>
         </>
       )}
